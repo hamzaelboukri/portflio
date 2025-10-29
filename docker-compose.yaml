@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  # express-api must be indented two spaces under 'services'
+  express-api:
+    build: ./backend
+    ports:
+      - "5050:5050"
+    volumes:
+      - ./backend:/usr/src/app
+    environment:
+      - NODE_ENV=development
+      - MONGODB_URI=mongodb://mongo:27017/portfolio
+      - JWT_ACCESS_SECRET=your-access-secret-key
+      - JWT_REFRESH_SECRET=your-refresh-secret-key
+    command: npm run dev
+    depends_on:
+      - mongo
+    networks:
+      - backend-network
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=portfolio
+    networks:
+      - backend-network
+
+networks:
+  backend-network:
+    driver: bridge
+    
+volumes:
+  mongo-data:
