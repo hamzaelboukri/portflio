@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-  # express-api must be indented two spaces under 'services'
   express-api:
     build: ./backend
     ports:
