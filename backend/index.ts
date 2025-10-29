@@ -1,11 +1,14 @@
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
-import { typeDefs } from './schema/typeDefs';
-import { resolvers } from './schema/resolvers';
+import competenceType from './graphql/schema/competence';
+
 import connectDB from './config/db';
 
 (async function start() {
   await connectDB();
+
+  const typeDefs = [competenceType];
+  const resolvers = {}; 
 
   const server = new ApolloServer({ typeDefs, resolvers });
 
