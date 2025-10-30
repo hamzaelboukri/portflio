@@ -1,8 +1,8 @@
 import Competence from '../../models/competence';
-import {IResolvers} from '@apollo/server';
+// import {IResolvers} from '@apollo/server';
 
 
-export const competenceResolvers: IResolvers = {
+export const competenceResolvers  = {
   Query: {
     getcompetences: async (): Promise<any[]> => {
       try {
@@ -14,7 +14,7 @@ export const competenceResolvers: IResolvers = {
       }
     }
   },
-  getcompetences:async(_: any,{id}:{id:string}):Promise<any>=>{
+  getcompetencesById:async(_: any,{id}:{id:string}):Promise<any>=>{
     try {
         const foundCompetence = await Competence.findById(id)
         if(!foundCompetence){
