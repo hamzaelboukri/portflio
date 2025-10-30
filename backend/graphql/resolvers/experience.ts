@@ -1,5 +1,4 @@
 
-import { promises } from "dns";
 import Experience from "../../models/experience";
 
 
@@ -40,10 +39,7 @@ Mutation:{
         const experience = new Experience(input);
        await  experience.save();
        return experience
-
-
-
-      } catch (error) {
+    } catch (error) {
         throw new Error(`Error creating experience: ${error}`);
       }
 
