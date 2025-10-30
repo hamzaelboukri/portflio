@@ -1,6 +1,7 @@
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import competenceType from './graphql/schema/competence';
+
 import connectDB from './config/db';
 
 (async function start() {
