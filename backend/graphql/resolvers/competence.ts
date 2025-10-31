@@ -1,4 +1,4 @@
-import Competence from '../../models/competence';
+import Competence from '../../models/competence.ts';
 // import {IResolvers} from '@apollo/server';
 
 

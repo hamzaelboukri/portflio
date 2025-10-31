@@ -1,4 +1,3 @@
-import { promises } from "dns";
 import Project from "../../models/projet";
 
 export const ProjectResolvers = {

@@ -1,32 +1,31 @@
-export const competenceType=`
-type Competence{
-id:ID!
-name:String!
-description:String!
-image:String!
-githubLink:String!
-webLink:String!    
+export const projectType = `
+type Project {
+    id: ID!
+    name: String!
+    description: String!
+    image: String!
+    githubLink: String!
+    webLink: String!    
 }
 
- type Query {
-    getprojects: [project!]!
-    getproject(id: ID!): project
+type Query {
+    getProjects: [Project!]!
+    getProject(id: ID!): Project
 }
 
 type Mutation {
-    createProjet(input: projectInput!): project!
-    updateProject(id: ID!, input: projectInput!): project!
+    createProject(input: ProjectInput!): Project!
+    updateProject(id: ID!, input: ProjectInput!): Project!
     deleteProject(id: ID!): String!
 }
 
-input projectInput {
-name:String!
-description:String!
-image:String!
-githubLink:String!
-webLink:String!
+input ProjectInput {
+    name: String!
+    description: String!
+    image: String!
+    githubLink: String!
+    webLink: String!
 }
+`;
 
-`
-
-export default competenceType;
+export default projectType;
