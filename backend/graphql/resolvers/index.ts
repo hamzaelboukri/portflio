@@ -1,7 +1,7 @@
 import { competenceResolvers } from "./competence"
 import { experienceResolvers } from "./experience"
 import { ProjectResolvers } from "./projet"
-// import {competenceResolvers} from "./profil"
+import {profilResolvers} from "./profil"
 
 
 export const resolver = {
@@ -9,12 +9,14 @@ export const resolver = {
         ...competenceResolvers,
         ...experienceResolvers,
         ...ProjectResolvers,
+        ...profilResolvers
 
     },
 mutation : {
      ...competenceResolvers.Mutation,
      ...ProjectResolvers,
      ...experienceResolvers,
+     ...profilResolvers
 },
 
 }
