@@ -10,6 +10,8 @@ services:
     environment:
       - NODE_ENV=development
       - MONGODB_URI=mongodb://mongo:27017/portfolio
+      - PORT=5050
+      - JWT_SECRET=your-access-secret-key
       - JWT_ACCESS_SECRET=your-access-secret-key
       - JWT_REFRESH_SECRET=your-refresh-secret-key
     command: npm run dev
@@ -25,7 +27,7 @@ services:
     volumes:
       - mongo-data:/data/db
     environment:
-      - MONGO_INITDB_DATABASE=portfolio
+      - MONGODB_URI=mongodb://mongo:27017/portfolio
     networks:
       - backend-network
 
