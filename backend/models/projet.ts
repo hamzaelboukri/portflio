@@ -1,6 +1,6 @@
 import mongoose,{ Schema,Document } from "mongoose";
 export interface IProjet extends Document {
-    title: string;
+    name: string;
     description: string;
     image: string;
     githubLink: string;
@@ -8,7 +8,7 @@ export interface IProjet extends Document {
 }
 
 const ProjetSchema: Schema = new Schema({
-    title: {type: String, required: true},
+    name: {type: String, required: true},
     description: {type: String, required: true},
     image: {type: String, required: true},
     githubLink: {type: String, required: true},

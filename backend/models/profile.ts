@@ -1,7 +1,7 @@
 import mongoose,{Schema,Document} from "mongoose";
 
 export interface IProfile extends Document {
-    fullname: string;
+    fullName: string;
     email: string;
     phone: string;
     address: string;
@@ -10,7 +10,7 @@ export interface IProfile extends Document {
 }
 
 const ProfileSchema: Schema = new Schema({
-    fullname: {type: String, required: true},
+    fullName: {type: String, required: true},
     email: {type: String, required: true},
     phone: {type: String, required: true},
     address: {type: String, required: true},

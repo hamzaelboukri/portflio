@@ -5,7 +5,7 @@ import Experience from "../../models/experience";
 
 export const portfolioResolvers = {
   Query: {
-    getPortfolio: async (): Promise<any> => {
+    getPortfolio  : async (): Promise<any> => {
       try {
         const profiles = await Profile.find();
         const projects = await Project.find();
