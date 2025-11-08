@@ -2,11 +2,16 @@ FROM node:18
 
 WORKDIR /usr/src/app
 
+# Copy package files first
 COPY package*.json ./
+
+# Install dependencies (Linux binaries)
 RUN npm install
 
+# Copy app code (but NOT node_modules thanks to .dockerignore)
 COPY . .
 
-EXPOSE 5174
+EXPOSE 5173
 
-CMD ["npm", "run", "dev"]
+# Run with --host to allow external connections
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

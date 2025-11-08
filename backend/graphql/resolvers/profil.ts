@@ -5,10 +5,8 @@ export const profilResolvers = {
     getProfile: async (): Promise<any[]> => {
       try {
         const profiles = await Profile.find();
-        if (!profiles || profiles.length === 0) {
-          throw new Error("No profiles found");
-        }
-        return profiles;
+        // Return an empty array if no profiles exist instead of throwing an error.
+        return profiles || [];
       } catch (error: any) {
         console.error("Error fetching profiles:", error.message, error);
         throw new Error("Failed to fetch profiles");

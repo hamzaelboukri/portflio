@@ -1,0 +1,39 @@
+# Reduce Docker build context for frontend
+# Dependencies and caches
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build outputs
+/dist
+/build
+/.next
+/out
+/.nuxt
+/.angular
+/.svelte-kit
+
+# Env and secrets
+.env
+.env.*
+
+# IDE and OS noise
+.vscode
+.idea
+.DS_Store
+
+# Misc caches
+.eslintcache
+.cache
+.tmp
+.tmp*
+
+# Logs
+logs
+*.log
+
+# Git metadata (not needed in image)
+.git
+.gitignore
