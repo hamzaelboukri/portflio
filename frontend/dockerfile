@@ -1,17 +1,19 @@
-FROM node:18
+# frontend/Dockerfile
+FROM node:18-alpine
 
 WORKDIR /usr/src/app
 
-# Copy package files first
+# Copy package files
 COPY package*.json ./
 
-# Install dependencies (Linux binaries)
+# Install dependencies
 RUN npm install
 
-# Copy app code (but NOT node_modules thanks to .dockerignore)
+# Copy source code
 COPY . .
 
-EXPOSE 5173
+# Expose port
+EXPOSE 5174
 
-# Run with --host to allow external connections
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+# Start development server
+CMD ["npm", "run", "dev"]

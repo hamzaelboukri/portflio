@@ -1,23 +1,18 @@
+// vite.config.js
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
+// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    react({
-      babel: {
-        plugins: [['babel-plugin-react-compiler']],
-      },
-    }),
-  ],
+  plugins: [react()],
   server: {
+    host: '0.0.0.0', // Allow external connections
+    port: 5174,
     proxy: {
       '/graphql': {
-        target: process.env.VITE_BACKEND_URL || 'http://localhost:5050',
+        target: 'http://express-api:5050',
         changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path.replace(/^\/graphql/, '/'),
-      },
-    },
-  },
+      }
+    }
+  }
 })

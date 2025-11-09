@@ -1,88 +1,159 @@
-import { useEffect, useState } from 'react'
-import { fetchGraphQL } from '../config/graphql.jsx'
+// src/dashboard/experience.jsx
+import React, { useState } from 'react'
+import { useQuery, useMutation, useQueryClient } from 'react-query'
+import { adminService } from '../services/api'
 
-export default function ExperienceAdmin() {
-  const [experiences, setExperiences] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const [form, setForm] = useState({ title: '', company: '', startDate: '', endDate: '', description: '' })
+const ExperienceManager = () => {
+  const [formData, setFormData] = useState({
+    company: '',
+    position: '',
+    duration: '',
+    description: '',
+  })
+  const [editingId, setEditingId] = useState(null)
+  const queryClient = useQueryClient()
 
-  useEffect(() => {
-    loadExperiences()
-  }, [])
+  const { data: experiences, isLoading, error } = useQuery(
+    'experiences',
+    adminService.getExperiences
+  )
 
-  async function loadExperiences() {
-    setLoading(true)
-    setError(null)
-    try {
-      const res = await fetchGraphQL(`query { getExperiences { id title company startDate endDate description } }`)
-      setExperiences(res.getExperiences || [])
-    } catch (err) {
-      setError(err.message || String(err))
-    } finally {
-      setLoading(false)
+  const createMutation = useMutation(adminService.createExperience, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('experiences')
+      setFormData({ company: '', position: '', duration: '', description: '' })
+    },
+  })
+
+  const updateMutation = useMutation(
+    ({ id, input }) => adminService.updateExperience(id, input),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('experiences')
+        setEditingId(null)
+        setFormData({ company: '', position: '', duration: '', description: '' })
+      },
     }
-  }
+  )
 
-  async function createExperience(e) {
+  const deleteMutation = useMutation(adminService.deleteExperience, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('experiences')
+    },
+  })
+
+  const handleSubmit = (e) => {
     e.preventDefault()
-    setError(null)
-    try {
-      const mutation = `mutation ($input: ExperienceInput!) { createExperience(input: $input) { id title } }`
-      const variables = { input: form }
-      const res = await fetchGraphQL(mutation, variables)
-      if (res && res.createExperience) setExperiences((s) => [res.createExperience, ...s])
-      setForm({ title: '', company: '', startDate: '', endDate: '', description: '' })
-    } catch (err) {
-      setError(err.message || String(err))
+    if (editingId) {
+      updateMutation.mutate({ id: editingId, input: formData })
+    } else {
+      createMutation.mutate(formData)
     }
   }
 
-  async function deleteExperience(id) {
-    if (!confirm('Delete this experience?')) return
-    setError(null)
-    try {
-      const mutation = `mutation ($id: ID!) { deleteExperience(id: $id) }`
-      await fetchGraphQL(mutation, { id })
-      setExperiences((s) => s.filter((x) => x.id !== id))
-    } catch (err) {
-      setError(err.message || String(err))
-    }
+  const handleEdit = (experience) => {
+    setFormData({
+      company: experience.company,
+      position: experience.position,
+      duration: experience.duration,
+      description: experience.description,
+    })
+    setEditingId(experience.id)
   }
+
+  if (isLoading) return <div>Loading experiences...</div>
+  if (error) return <div>Error: {error.message}</div>
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      <h2>Manage Experiences</h2>
-
-      <form onSubmit={createExperience} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        <input placeholder="Title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
-        <input placeholder="Company" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} />
-        <div style={{ display: 'flex', gap: 8 }}>
-          <input type="date" placeholder="Start" value={form.startDate} onChange={(e) => setForm({ ...form, startDate: e.target.value })} />
-          <input type="date" placeholder="End" value={form.endDate} onChange={(e) => setForm({ ...form, endDate: e.target.value })} />
+    <div className="bg-white rounded-lg shadow-md p-6">
+      <h2 className="text-2xl font-bold mb-6">Manage Experiences</h2>
+      
+      <form onSubmit={handleSubmit} className="mb-8 space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input
+            type="text"
+            placeholder="Company"
+            value={formData.company}
+            onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+            className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+          <input
+            type="text"
+            placeholder="Position"
+            value={formData.position}
+            onChange={(e) => setFormData({ ...formData, position: e.target.value })}
+            className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
         </div>
-        <textarea placeholder="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-        <div>
-          <button type="submit">Create Experience</button>
-        </div>
+        <input
+          type="text"
+          placeholder="Duration (e.g., 2020-2022)"
+          value={formData.duration}
+          onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+          className="border rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+          required
+        />
+        <textarea
+          placeholder="Description"
+          value={formData.description}
+          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          className="border rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+          rows="3"
+          required
+        />
+        <button
+          type="submit"
+          disabled={createMutation.isLoading || updateMutation.isLoading}
+          className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded disabled:opacity-50"
+        >
+          {editingId ? 'Update' : 'Create'} Experience
+        </button>
+        {editingId && (
+          <button
+            type="button"
+            onClick={() => {
+              setEditingId(null)
+              setFormData({ company: '', position: '', duration: '', description: '' })
+            }}
+            className="ml-2 bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded"
+          >
+            Cancel
+          </button>
+        )}
       </form>
 
-      {loading && <p>Loading experiences…</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-
-      <section>
-        <h3>Existing Experiences</h3>
-        {experiences.length === 0 && <p>No experiences yet.</p>}
-        <ul>
-          {experiences.map((exp) => (
-            <li key={exp.id} style={{ marginBottom: 12 }}>
-              <strong>{exp.title}</strong> — {exp.company} ({exp.startDate} - {exp.endDate})
-              <p>{exp.description}</p>
-              <button onClick={() => deleteExperience(exp.id)}>Delete</button>
-            </li>
-          ))}
-        </ul>
-      </section>
+      <div className="space-y-4">
+        {experiences?.getExperiences?.map((experience) => (
+          <div key={experience.id} className="border p-4 rounded-lg">
+            <div className="flex justify-between items-start">
+              <div className="flex-1">
+                <h3 className="font-semibold text-lg">{experience.position}</h3>
+                <p className="text-gray-600 font-medium">{experience.company}</p>
+                <p className="text-sm text-gray-500 mt-1">{experience.duration}</p>
+                <p className="mt-2 text-gray-700">{experience.description}</p>
+              </div>
+              <div className="space-x-2 ml-4">
+                <button
+                  onClick={() => handleEdit(experience)}
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-3 rounded text-sm"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => deleteMutation.mutate(experience.id)}
+                  className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded text-sm"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
+
+export default ExperienceManager
