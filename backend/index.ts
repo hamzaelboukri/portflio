@@ -10,13 +10,17 @@ import resolver from "./graphql/resolvers/index";
 
     const server = new ApolloServer({
       typeDefs,
-      resolvers: resolver, 
+      resolvers: resolver,
+      introspection: true,
     });
 
     const port = Number(process.env.PORT) || 5000;
 
     const { url } = await startStandaloneServer(server, {
       listen: { port, host: '0.0.0.0' },
+      context: async ({ req }) => {
+        return { req };
+      },
     });
 
     console.log(`🚀 Server ready at ${url}`);
