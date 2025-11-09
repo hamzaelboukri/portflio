@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from 'react-query'
 import { adminService } from '../services/api'
 
 const CompetenceManager = () => {
-  const [formData, setFormData] = useState({ name: '', level: '', category: '' })
+  const [formData, setFormData] = useState({ name: '', description: '' })
   const [editingId, setEditingId] = useState(null)
   const queryClient = useQueryClient()
 
@@ -16,7 +16,7 @@ const CompetenceManager = () => {
   const createMutation = useMutation(adminService.createCompetence, {
     onSuccess: () => {
       queryClient.invalidateQueries('competences')
-      setFormData({ name: '', level: '', category: '' })
+      setFormData({ name: '', description: '' })
     },
   })
 
@@ -26,7 +26,7 @@ const CompetenceManager = () => {
       onSuccess: () => {
         queryClient.invalidateQueries('competences')
         setEditingId(null)
-        setFormData({ name: '', level: '', category: '' })
+        setFormData({ name: '', description: '' })
       },
     }
   )
@@ -39,18 +39,21 @@ const CompetenceManager = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    const input = {
+      name: formData.name,
+      description: formData.description,
+    }
     if (editingId) {
-      updateMutation.mutate({ id: editingId, input: formData })
+      updateMutation.mutate({ id: editingId, input })
     } else {
-      createMutation.mutate(formData)
+      createMutation.mutate(input)
     }
   }
 
   const handleEdit = (competence) => {
     setFormData({
       name: competence.name,
-      level: competence.level,
-      category: competence.category,
+      description: competence.description,
     })
     setEditingId(competence.id)
   }
@@ -63,7 +66,7 @@ const CompetenceManager = () => {
       <h2 className="text-2xl font-bold mb-6">Manage Competences</h2>
       
       <form onSubmit={handleSubmit} className="mb-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <div className="grid grid-cols-1 gap-4 mb-4">
           <input
             type="text"
             placeholder="Name"
@@ -72,20 +75,12 @@ const CompetenceManager = () => {
             className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
-          <input
-            type="text"
-            placeholder="Level"
-            value={formData.level}
-            onChange={(e) => setFormData({ ...formData, level: e.target.value })}
+          <textarea
+            placeholder="Description"
+            value={formData.description}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-          <input
-            type="text"
-            placeholder="Category"
-            value={formData.category}
-            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-            className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            rows={3}
             required
           />
         </div>
@@ -101,7 +96,7 @@ const CompetenceManager = () => {
             type="button"
             onClick={() => {
               setEditingId(null)
-              setFormData({ name: '', level: '', category: '' })
+              setFormData({ name: '', description: '' })
             }}
             className="ml-2 bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded"
           >
@@ -115,9 +110,7 @@ const CompetenceManager = () => {
           <div key={competence.id} className="flex justify-between items-center border p-4 rounded-lg">
             <div>
               <h3 className="font-semibold text-lg">{competence.name}</h3>
-              <p className="text-gray-600">
-                {competence.category} - Level: {competence.level}
-              </p>
+              <p className="text-gray-600">{competence.description}</p>
             </div>
             <div className="space-x-2">
               <button

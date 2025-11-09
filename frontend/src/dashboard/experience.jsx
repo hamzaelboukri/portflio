@@ -5,9 +5,10 @@ import { adminService } from '../services/api'
 
 const ExperienceManager = () => {
   const [formData, setFormData] = useState({
+    title: '',
     company: '',
-    position: '',
-    duration: '',
+    startDate: '',
+    endDate: '',
     description: '',
   })
   const [editingId, setEditingId] = useState(null)
@@ -21,7 +22,7 @@ const ExperienceManager = () => {
   const createMutation = useMutation(adminService.createExperience, {
     onSuccess: () => {
       queryClient.invalidateQueries('experiences')
-      setFormData({ company: '', position: '', duration: '', description: '' })
+      setFormData({ title: '', company: '', startDate: '', endDate: '', description: '' })
     },
   })
 
@@ -31,7 +32,7 @@ const ExperienceManager = () => {
       onSuccess: () => {
         queryClient.invalidateQueries('experiences')
         setEditingId(null)
-        setFormData({ company: '', position: '', duration: '', description: '' })
+        setFormData({ title: '', company: '', startDate: '', endDate: '', description: '' })
       },
     }
   )
@@ -44,18 +45,27 @@ const ExperienceManager = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    const input = {
+      title: formData.title,
+      company: formData.company,
+      startDate: formData.startDate,
+      endDate: formData.endDate,
+      description: formData.description,
+    }
+
     if (editingId) {
-      updateMutation.mutate({ id: editingId, input: formData })
+      updateMutation.mutate({ id: editingId, input })
     } else {
-      createMutation.mutate(formData)
+      createMutation.mutate(input)
     }
   }
 
   const handleEdit = (experience) => {
     setFormData({
+      title: experience.title,
       company: experience.company,
-      position: experience.position,
-      duration: experience.duration,
+      startDate: experience.startDate,
+      endDate: experience.endDate,
       description: experience.description,
     })
     setEditingId(experience.id)
@@ -72,29 +82,39 @@ const ExperienceManager = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <input
             type="text"
+            placeholder="Job Title"
+            value={formData.title}
+            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+            className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+          <input
+            type="text"
             placeholder="Company"
             value={formData.company}
             onChange={(e) => setFormData({ ...formData, company: e.target.value })}
             className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <input
             type="text"
-            placeholder="Position"
-            value={formData.position}
-            onChange={(e) => setFormData({ ...formData, position: e.target.value })}
-            className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Start Date (e.g., Jan 2020)"
+            value={formData.startDate}
+            onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+            className="border rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+          <input
+            type="text"
+            placeholder="End Date (e.g., Dec 2021 or Present)"
+            value={formData.endDate}
+            onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+            className="border rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
         </div>
-        <input
-          type="text"
-          placeholder="Duration (e.g., 2020-2022)"
-          value={formData.duration}
-          onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-          className="border rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
         <textarea
           placeholder="Description"
           value={formData.description}
@@ -115,7 +135,7 @@ const ExperienceManager = () => {
             type="button"
             onClick={() => {
               setEditingId(null)
-              setFormData({ company: '', position: '', duration: '', description: '' })
+              setFormData({ title: '', company: '', startDate: '', endDate: '', description: '' })
             }}
             className="ml-2 bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded"
           >
@@ -129,9 +149,9 @@ const ExperienceManager = () => {
           <div key={experience.id} className="border p-4 rounded-lg">
             <div className="flex justify-between items-start">
               <div className="flex-1">
-                <h3 className="font-semibold text-lg">{experience.position}</h3>
+                <h3 className="font-semibold text-lg">{experience.title}</h3>
                 <p className="text-gray-600 font-medium">{experience.company}</p>
-                <p className="text-sm text-gray-500 mt-1">{experience.duration}</p>
+                <p className="text-sm text-gray-500 mt-1">{experience.startDate} - {experience.endDate}</p>
                 <p className="mt-2 text-gray-700">{experience.description}</p>
               </div>
               <div className="space-x-2 ml-4">

@@ -5,10 +5,11 @@ import { adminService } from '../services/api'
 
 const ProjectManager = () => {
   const [formData, setFormData] = useState({
-    title: '',
+    name: '',
     description: '',
-    technologies: '',
-    link: '',
+    image: '',
+    githubLink: '',
+    webLink: '',
   })
   const [editingId, setEditingId] = useState(null)
   const queryClient = useQueryClient()
@@ -21,7 +22,7 @@ const ProjectManager = () => {
   const createMutation = useMutation(adminService.createProject, {
     onSuccess: () => {
       queryClient.invalidateQueries('projects')
-      setFormData({ title: '', description: '', technologies: '', link: '' })
+      setFormData({ name: '', description: '', image: '', githubLink: '', webLink: '' })
     },
   })
 
@@ -31,7 +32,7 @@ const ProjectManager = () => {
       onSuccess: () => {
         queryClient.invalidateQueries('projects')
         setEditingId(null)
-        setFormData({ title: '', description: '', technologies: '', link: '' })
+        setFormData({ name: '', description: '', image: '', githubLink: '', webLink: '' })
       },
     }
   )
@@ -45,8 +46,11 @@ const ProjectManager = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
     const input = {
-      ...formData,
-      technologies: formData.technologies.split(',').map(tech => tech.trim())
+      name: formData.name,
+      description: formData.description,
+      image: formData.image || '',
+      githubLink: formData.githubLink || '',
+      webLink: formData.webLink || '',
     }
     
     if (editingId) {
@@ -58,10 +62,11 @@ const ProjectManager = () => {
 
   const handleEdit = (project) => {
     setFormData({
-      title: project.title,
+      name: project.name,
       description: project.description,
-      technologies: project.technologies?.join(', ') || '',
-      link: project.link || '',
+      image: project.image || '',
+      githubLink: project.githubLink || '',
+      webLink: project.webLink || '',
     })
     setEditingId(project.id)
   }
@@ -76,9 +81,9 @@ const ProjectManager = () => {
       <form onSubmit={handleSubmit} className="mb-8 space-y-4">
         <input
           type="text"
-          placeholder="Project Title"
-          value={formData.title}
-          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+          placeholder="Project Name"
+          value={formData.name}
+          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           className="border rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
         />
@@ -91,18 +96,24 @@ const ProjectManager = () => {
           required
         />
         <input
-          type="text"
-          placeholder="Technologies (comma separated)"
-          value={formData.technologies}
-          onChange={(e) => setFormData({ ...formData, technologies: e.target.value })}
+          type="url"
+          placeholder="Image URL (optional)"
+          value={formData.image}
+          onChange={(e) => setFormData({ ...formData, image: e.target.value })}
           className="border rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
         />
         <input
           type="url"
-          placeholder="Project Link"
-          value={formData.link}
-          onChange={(e) => setFormData({ ...formData, link: e.target.value })}
+          placeholder="GitHub / Source URL (optional)"
+          value={formData.githubLink}
+          onChange={(e) => setFormData({ ...formData, githubLink: e.target.value })}
+          className="border rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <input
+          type="url"
+          placeholder="Live Demo URL (optional)"
+          value={formData.webLink}
+          onChange={(e) => setFormData({ ...formData, webLink: e.target.value })}
           className="border rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <button
@@ -147,23 +158,14 @@ const ProjectManager = () => {
               </div>
             </div>
             <p className="text-gray-600 text-sm mb-3">{project.description}</p>
-            <div className="flex flex-wrap gap-1 mb-3">
-              {project.technologies?.map((tech, index) => (
-                <span key={index} className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
-                  {tech}
-                </span>
-              ))}
+            <div className="flex gap-3 items-center mb-3">
+              {project.githubLink && (
+                <a href={project.githubLink} className="text-sm text-gray-600 hover:underline" target="_blank" rel="noopener noreferrer">Source</a>
+              )}
+              {project.webLink && (
+                <a href={project.webLink} className="text-sm text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer">View</a>
+              )}
             </div>
-            {project.link && (
-              <a
-                href={project.link}
-                className="text-blue-500 hover:underline text-sm"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                View Project
-              </a>
-            )}
           </div>
         ))}
       </div>

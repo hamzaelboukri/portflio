@@ -4,7 +4,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { AuthProvider } from './context/AuthContext'
 import IndexPage from './pages/index.jsx'
-import AdminDashboard from './dashboard/admin.jsx'
+// `admine.jsx` is the admin dashboard file in this project (typo in filename).
+import AdminDashboard from './dashboard/admine.jsx'
 import Login from './components/Login'
 import './App.css'
 

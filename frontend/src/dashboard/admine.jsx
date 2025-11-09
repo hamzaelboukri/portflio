@@ -1,10 +1,10 @@
-// src/dashboard/admin.jsx
+// src/dashboard/admine.jsx
 import React, { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
-import Sidebar from '../sidebar.jsx'
-import CompetenceManager from './compstance.jsx'
+import Sidebar from '../components/dashboard/sidebare.jsx'
+import CompetenceManager from './competence.jsx'
 import ExperienceManager from './experience.jsx'
-import ProfileManager from './protil.jsx'
+import ProfileManager from './profil.jsx'
 import ProjectManager from './projet.jsx'
 
 const AdminDashboard = () => {

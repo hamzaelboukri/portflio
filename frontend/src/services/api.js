@@ -6,10 +6,10 @@ const getApiUrl = () => {
   }
   
   if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-    return 'http://express-api:5050/graphql'
+    return 'http://express-api:5050'
   }
   
-  return 'http://localhost:5050/graphql'
+  return 'http://localhost:5050'
 }
 
 const API_URL = getApiUrl()
@@ -108,22 +108,23 @@ export const portfolioService = {
           }
           projects {
             id
-            title
+            name
             description
-            technologies
-            link
+            image
+            githubLink
+            webLink
           }
           competences {
             id
             name
-            level
-            category
+            description
           }
           experiences {
             id
+            title
             company
-            position
-            duration
+            startDate
+            endDate
             description
           }
         }
@@ -141,8 +142,7 @@ export const adminService = {
         getCompetences {
           id
           name
-          level
-          category
+          description
         }
       }
     `
@@ -155,8 +155,7 @@ export const adminService = {
         createCompetence(input: $input) {
           id
           name
-          level
-          category
+          description
         }
       }
     `
@@ -169,8 +168,7 @@ export const adminService = {
         updateCompetence(id: $id, input: $input) {
           id
           name
-          level
-          category
+          description
         }
       }
     `
@@ -192,9 +190,10 @@ export const adminService = {
       query {
         getExperiences {
           id
+          title
           company
-          position
-          duration
+          startDate
+          endDate
           description
         }
       }
@@ -207,9 +206,10 @@ export const adminService = {
       mutation CreateExperience($input: ExperienceInput!) {
         createExperience(input: $input) {
           id
+          title
           company
-          position
-          duration
+          startDate
+          endDate
           description
         }
       }
@@ -222,9 +222,10 @@ export const adminService = {
       mutation UpdateExperience($id: ID!, $input: ExperienceInput!) {
         updateExperience(id: $id, input: $input) {
           id
+          title
           company
-          position
-          duration
+          startDate
+          endDate
           description
         }
       }
@@ -294,6 +295,64 @@ export const adminService = {
     const mutation = `
       mutation DeleteProfile($id: ID!) {
         deleteProfile(id: $id)
+      }
+    `
+    return await api.mutate(mutation, { id })
+  },
+
+  // Projects
+  getProjects: async () => {
+    const query = `
+      query {
+        getProjects {
+          id
+          name
+          description
+          image
+          githubLink
+          webLink
+        }
+      }
+    `
+    return await api.query(query)
+  },
+
+  createProject: async (input) => {
+    const mutation = `
+      mutation CreateProject($input: ProjectInput!) {
+        createProject(input: $input) {
+          id
+          name
+          description
+          image
+          githubLink
+          webLink
+        }
+      }
+    `
+    return await api.mutate(mutation, { input })
+  },
+
+  updateProject: async (id, input) => {
+    const mutation = `
+      mutation UpdateProject($id: ID!, $input: ProjectInput!) {
+        updateProject(id: $id, input: $input) {
+          id
+          name
+          description
+          image
+          githubLink
+          webLink
+        }
+      }
+    `
+    return await api.mutate(mutation, { id, input })
+  },
+
+  deleteProject: async (id) => {
+    const mutation = `
+      mutation DeleteProject($id: ID!) {
+        deleteProject(id: $id)
       }
     `
     return await api.mutate(mutation, { id })
