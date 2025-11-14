@@ -107,24 +107,26 @@ const CompetenceManager = () => {
 
       <div className="space-y-4">
         {competences?.getCompetences?.map((competence) => (
-          <div key={competence.id} className="flex justify-between items-center border p-4 rounded-lg">
-            <div>
-              <h3 className="font-semibold text-lg">{competence.name}</h3>
-              <p className="text-gray-600">{competence.description}</p>
-            </div>
-            <div className="space-x-2">
-              <button
-                onClick={() => handleEdit(competence)}
-                className="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-3 rounded text-sm"
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => deleteMutation.mutate(competence.id)}
-                className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded text-sm"
-              >
-                Delete
-              </button>
+          <div key={competence.id} className="border p-4 rounded-lg">
+            <div className="flex justify-between items-start">
+              <div className="flex-1">
+                <h3 className="font-semibold text-xl text-blue-600">{competence.name}</h3>
+                <p className="text-gray-600 mt-2">{competence.description}</p>
+              </div>
+              <div className="space-x-2 ml-4">
+                <button
+                  onClick={() => handleEdit(competence)}
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-3 rounded text-sm"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => deleteMutation.mutate(competence.id)}
+                  className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded text-sm"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
         ))}

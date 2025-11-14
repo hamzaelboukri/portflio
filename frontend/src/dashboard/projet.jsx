@@ -128,7 +128,7 @@ const ProjectManager = () => {
             type="button"
             onClick={() => {
               setEditingId(null)
-              setFormData({ title: '', description: '', technologies: '', link: '' })
+              setFormData({ name: '', description: '', image: '', githubLink: '', webLink: '' })
             }}
             className="ml-2 bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded"
           >
@@ -141,7 +141,7 @@ const ProjectManager = () => {
         {projects?.getProjects?.map((project) => (
           <div key={project.id} className="border rounded-lg p-4">
             <div className="flex justify-between items-start mb-3">
-              <h3 className="font-semibold text-lg">{project.title}</h3>
+              <h3 className="font-semibold text-lg text-black">{project.name}</h3>
               <div className="space-x-2">
                 <button
                   onClick={() => handleEdit(project)}
@@ -157,13 +157,13 @@ const ProjectManager = () => {
                 </button>
               </div>
             </div>
-            <p className="text-gray-600 text-sm mb-3">{project.description}</p>
+            <p className="text-black text-sm mb-3">{project.description}</p>
             <div className="flex gap-3 items-center mb-3">
               {project.githubLink && (
-                <a href={project.githubLink} className="text-sm text-gray-600 hover:underline" target="_blank" rel="noopener noreferrer">Source</a>
+                <a href={project.githubLink} className="text-sm text-black hover:underline" target="_blank" rel="noopener noreferrer">Source</a>
               )}
               {project.webLink && (
-                <a href={project.webLink} className="text-sm text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer">View</a>
+                <a href={project.webLink} className="text-sm text-black hover:underline" target="_blank" rel="noopener noreferrer">View</a>
               )}
             </div>
           </div>

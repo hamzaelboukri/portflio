@@ -147,7 +147,7 @@ const ProfileManager = () => {
                   </div>
                   <div>
                     <p className="text-gray-600">{profile.address}</p>
-                    <a href={profile.website} className="text-blue-500 hover:underline">
+                    <a href={profile.website} className="text-blue-600 hover:underline">
                       {profile.website}
                     </a>
                   </div>

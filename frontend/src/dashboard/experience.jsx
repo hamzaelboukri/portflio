@@ -149,10 +149,10 @@ const ExperienceManager = () => {
           <div key={experience.id} className="border p-4 rounded-lg">
             <div className="flex justify-between items-start">
               <div className="flex-1">
-                <h3 className="font-semibold text-lg">{experience.title}</h3>
+                <h3 className="font-semibold text-xl text-blue-600">{experience.title}</h3>
                 <p className="text-gray-600 font-medium">{experience.company}</p>
                 <p className="text-sm text-gray-500 mt-1">{experience.startDate} - {experience.endDate}</p>
-                <p className="mt-2 text-gray-700">{experience.description}</p>
+                <p className="mt-2 text-gray-600">{experience.description}</p>
               </div>
               <div className="space-x-2 ml-4">
                 <button
